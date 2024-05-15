@@ -1,11 +1,11 @@
 /**
  * @author Lucas e Simão
  */
-package com.example.demo.src;
+package com.example.projetoSD.src;
 
-import com.example.demo.interfaces.RMIBarrelInterface;
-import com.example.demo.interfaces.RMIServerInterface;
-import com.example.demo.interfaces.URLQueueInterface;
+import com.example.projetoSD.interfaces.RMIBarrelInterface;
+import com.example.projetoSD.interfaces.RMIServerInterface;
+import com.example.projetoSD.interfaces.URLQueueInterface;
 
 import java.io.*;
 import java.net.MalformedURLException;

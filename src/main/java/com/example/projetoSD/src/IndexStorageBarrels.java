@@ -1,9 +1,9 @@
 /**
  * @author Lucas e Simão
  */
-package com.example.demo.src;
+package com.example.projetoSD.src;
 
-import com.example.demo.interfaces.RMIBarrelInterface;
+import com.example.projetoSD.interfaces.RMIBarrelInterface;
 
 import java.io.FileInputStream;
 import java.rmi.NotBoundException;

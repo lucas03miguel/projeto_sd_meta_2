@@ -1,0 +1,6 @@
+all 5
+ola 1
+bottom 5
+universidade 1
+right 5
+coimbra 4

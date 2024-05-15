@@ -1,7 +1,7 @@
 /**
  * @author Lucas e Simão
  */
-package com.example.demo.interfaces;
+package com.example.projetoSD.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
