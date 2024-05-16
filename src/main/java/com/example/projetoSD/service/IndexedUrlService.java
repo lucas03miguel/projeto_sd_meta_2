@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class IndexedUrlService {
-    private final FileService fileService = new FileService();
+    private final UrlFileService urlFileService = new UrlFileService();
     private List<IndexedUrl> indexedUrls;
     
     public IndexedUrlService() {
-        this.indexedUrls = fileService.loadIndexedUrls();
+        this.indexedUrls = urlFileService.loadIndexedUrls();
     }
     
     public List<IndexedUrl> getAllIndexedUrls() {
@@ -20,7 +20,7 @@ public class IndexedUrlService {
     
     public void addIndexedUrl(IndexedUrl url) {
         indexedUrls.add(url);
-        fileService.saveIndexedUrls(indexedUrls);
+        urlFileService.saveIndexedUrls(indexedUrls);
     }
     
     public List<IndexedUrl> search(String query) {

@@ -6,10 +6,20 @@ import java.util.List;
 
 import com.example.projetoSD.model.IndexedUrl;
 
-public class FileService {
-    private static final String FILE_PATH = "../database/indexed_urls.dat";
+public class UrlFileService {
+    private static final String FILE_PATH = "./src/main/java/com/example/projetoSD/database/indexed_urls.dat";
     
     public void saveIndexedUrls(List<IndexedUrl> urls) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                boolean __ = file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(urls);
         } catch (IOException e) {

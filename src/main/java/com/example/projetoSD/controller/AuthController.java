@@ -1,9 +1,7 @@
 package com.example.projetoSD.controller;
 
-
 import com.example.projetoSD.model.User;
 import com.example.projetoSD.service.UserService;
-import com.example.projetoSD.web.FormRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-@RequestMapping("/")
 public class AuthController {
+    
     private final UserService userService;
     
     @Autowired
@@ -24,40 +22,32 @@ public class AuthController {
     public RedirectView redirectToLogin() {
         return new RedirectView("/login");
     }
-    
     @GetMapping("/login")
-    public String loginForm(Model m) {
-        m.addAttribute("FormRequest", new User());
+    public String loginForm(Model model) {
+        model.addAttribute("formRequest", new User());
         return "login";
     }
     
     @PostMapping("/login")
-    public String login(@ModelAttribute User u, Model model) {
-        String username = u.getUsername();
-        String password = u.getPassword();
-        
-        if (userService.validateLogin(username, password))
-            return "redirect:/";
-        
+    public String login(@ModelAttribute("formRequest") User formRequest, Model model) {
+        if (userService.validateLogin(formRequest.getUsername(), formRequest.getPassword())) {
+            return "redirect:/teste"; // Login bem-sucedido, redirecionar para a página principal
+        }
         model.addAttribute("error", "Invalid username or password");
-        return "login";
+        return "redirect:/login?error=true";
     }
     
     @GetMapping("/register")
-    public String registerForm(Model m) {
-        m.addAttribute("RegisterRequest", new User());
+    public String registerForm(Model model) {
+        model.addAttribute("formRequest", new User());
         return "register";
     }
     
     @PostMapping("/register")
-    public String register(@ModelAttribute User u, Model model) {
-        String username = u.getUsername();
-        String password = u.getPassword();
-        
-        User newUser = new User(username, password);
-        if (userService.registerUser(newUser))
-            return "redirect:/login"; // Registro bem-sucedido, redirecionar para a página de login
-        
+    public String register(@ModelAttribute("formRequest") User formRequest, Model model) {
+        if (userService.registerUser(formRequest)) {
+            return "redirect:/teste"; // Registro bem-sucedido, redirecionar para a página de login
+        }
         model.addAttribute("error", "Username already exists");
         return "register";
     }

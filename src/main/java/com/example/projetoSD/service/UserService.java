@@ -3,6 +3,7 @@ package com.example.projetoSD.service;
 import com.example.projetoSD.model.User;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -10,7 +11,7 @@ public class UserService {
     private final UserFileService userFileService = new UserFileService();
     private List<User> users;
     
-    public UserService() {
+    public UserService() throws IOException {
         this.users = userFileService.loadUsers();
     }
     

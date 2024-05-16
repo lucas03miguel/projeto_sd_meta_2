@@ -32,3 +32,4 @@ build/
 .vscode/
 
 *.pdf
+src/main/java/com/example/projetoSD/database/*.dat
