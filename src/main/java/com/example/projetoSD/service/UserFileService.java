@@ -16,7 +16,8 @@ public class UserFileService {
             try {
                 boolean __ = file.createNewFile();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error creating file");
+                e.printStackTrace();
             }
             return;
         }
@@ -24,6 +25,7 @@ public class UserFileService {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(users);
         } catch (IOException e) {
+            System.out.println("Error saving users");
             e.printStackTrace();
         }
     }
@@ -43,8 +45,8 @@ public class UserFileService {
         
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
             return (List<User>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException ignored) {
+            System.out.println("Error reading users");
         }
         return new ArrayList<>();
     }

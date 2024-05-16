@@ -15,7 +15,8 @@ public class UrlFileService {
             try {
                 boolean __ = file.createNewFile();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error creating file");
+                e.printStackTrace();
             }
             return;
         }
@@ -23,6 +24,7 @@ public class UrlFileService {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             oos.writeObject(urls);
         } catch (IOException e) {
+            System.out.println("Error saving indexed urls");
             e.printStackTrace();
         }
     }
@@ -31,13 +33,19 @@ public class UrlFileService {
     public List<IndexedUrl> loadIndexedUrls() {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
+            try {
+                boolean __ = file.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Error creating file");
+                e.printStackTrace();
+            }
             return new ArrayList<>();
         }
         
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
             return (List<IndexedUrl>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException ignored) {
+            System.out.println("Error reading indexed urls");
         }
         return new ArrayList<>();
     }

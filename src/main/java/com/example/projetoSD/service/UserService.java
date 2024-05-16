@@ -11,7 +11,7 @@ public class UserService {
     private final UserFileService userFileService = new UserFileService();
     private List<User> users;
     
-    public UserService() throws IOException {
+    public UserService() {
         this.users = userFileService.loadUsers();
     }
     
