@@ -1,7 +1,7 @@
 /**
  * @author Lucas e Simão
  */
-package com.example.projetoSD.src;
+package com.example.projetoSD.search;
 
 import java.io.*;
 import java.net.*;

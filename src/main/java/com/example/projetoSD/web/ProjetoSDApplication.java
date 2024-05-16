@@ -1,4 +1,4 @@
-package com.example.projetoSD;
+package com.example.projetoSD.web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

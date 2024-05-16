@@ -1,7 +1,7 @@
 /**
  * @author Lucas e Simão
  */
-package com.example.projetoSD.src;
+package com.example.projetoSD.search;
 
 import com.example.projetoSD.interfaces.URLQueueInterface;
 import org.jsoup.Jsoup;
