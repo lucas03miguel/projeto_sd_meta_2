@@ -9,7 +9,7 @@ public class IndexedUrl implements Serializable {
     /**
      * URL da página web.
      */
-    private final String url;
+    private String url;
     /**
      * Título da página web.
      */
@@ -21,7 +21,10 @@ public class IndexedUrl implements Serializable {
     /**
      * Palavras da página web.
      */
-    private final Set<String> words;
+    private Set<String> words;
+    
+    public IndexedUrl() {
+    }
     
     /**
      * Construtor da classe WebPage.

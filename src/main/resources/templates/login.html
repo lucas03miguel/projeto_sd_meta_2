@@ -40,21 +40,7 @@
     </form>
 </div>
 
-<script>
-    function submitRegisterForm() {
-        document.getElementById('newUsername').value = document.getElementById('username').value;
-        document.getElementById('newPassword').value = document.getElementById('password').value;
-        document.getElementById('registerForm').submit();
-    }
-
-    window.onload = function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
-        if (error) {
-            document.getElementById('username').classList.add('error');
-            document.getElementById('password').classList.add('error');
-        }
-    }
-</script>
+    <script src="js/error_handling.js"></script>
+    <script src="js/form_actions.js"></script>
 </body>
 </html>

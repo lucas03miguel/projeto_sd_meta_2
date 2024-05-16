@@ -1,5 +1,6 @@
 package com.example.projetoSD.controller;
 
+import com.example.projetoSD.model.IndexedUrl;
 import com.example.projetoSD.model.User;
 import com.example.projetoSD.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +32,23 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@ModelAttribute("formRequest") User formRequest, Model model) {
         if (userService.validateLogin(formRequest.getUsername(), formRequest.getPassword())) {
-            return "redirect:/teste"; // Login bem-sucedido, redirecionar para a página principal
+            return "redirect:/dashboard"; // Login bem-sucedido, redirecionar para a página principal
         }
-        model.addAttribute("error", "Invalid username or password");
-        return "redirect:/login?error=true";
-    }
-    
-    @GetMapping("/register")
-    public String registerForm(Model model) {
-        model.addAttribute("formRequest", new User());
-        return "register";
+        return "redirect:/login?error=login";
     }
     
     @PostMapping("/register")
     public String register(@ModelAttribute("formRequest") User formRequest, Model model) {
         if (userService.registerUser(formRequest)) {
-            return "redirect:/teste"; // Registro bem-sucedido, redirecionar para a página de login
+            return "redirect:/dashboard"; // Registro bem-sucedido, redirecionar para a página principal
         }
-        model.addAttribute("error", "Username already exists");
-        return "register";
+        return "redirect:/login?error=register";
+    }
+    
+    @GetMapping("/dashboard")
+    public String showdashboard(Model m) {
+        m.addAttribute("IndexRequest", new IndexedUrl());
+        System.out.println("[CLIENT] Dashboard page requested");
+        return "dashboard"; // Return the name of the Thymeleaf template for the dashboard page
     }
 }
