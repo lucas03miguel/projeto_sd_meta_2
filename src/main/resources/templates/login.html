@@ -22,6 +22,7 @@
             <button type="submit">Login</button>
             <button type="button" id="registerButton" onclick="submitRegisterForm()">Register</button>
         </div>
+        <div id="error-message" class="error-message"></div> <!-- Element for displaying the error message -->
     </form>
 
     <form class="form-register" action="/register" method="post" id="registerForm" style="display:none;">
@@ -41,17 +42,18 @@
     window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
-        console.log(error);
 
         if (error) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = 'Credenciais inválidas!';
+            errorMessage.style.display = 'block';
+
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             usernameInput.classList.add('error');
             passwordInput.classList.add('error');
             shakeElement(usernameInput);
             shakeElement(passwordInput);
-
-            alert('Credenciais inválidas!');
         }
     }
 </script>

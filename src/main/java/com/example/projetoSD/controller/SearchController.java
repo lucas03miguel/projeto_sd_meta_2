@@ -20,18 +20,17 @@ import java.util.Map;
 @RequestMapping("/")
 public class SearchController {
     private final RMIServerInterface sv;
-
+    
     @Autowired
     SearchController(RMIServerInterface rmiServerInterface) {
         this.sv = rmiServerInterface;
     }
-
+    
     @PostMapping("/index-url")
     @ResponseBody
     public ResponseEntity<String> indexUrl(@RequestBody IndexedUrl indexedUrl) {
         try {
             String res = sv.indexar(indexedUrl.getUrl());
-            System.out.println(res);
             if (res.equals("URL valido")) {
                 return ResponseEntity.ok("URL adicionado com sucesso!");
             } else {
@@ -43,25 +42,18 @@ public class SearchController {
     }
     
     @GetMapping("/search")
-    public String searchPage(@RequestParam String query, Model model) {
-        if (query.length() < 1) {
-            model.addAttribute("error", "Pesquisa inválida (1+ caracteres)");
-            return "redirect:/dashboard?error=true";
-        }
-        
+    public String searchPage(@RequestParam String query, @RequestParam int page, Model model) {
         model.addAttribute("query", query);
+        model.addAttribute("page", page);
         return "search";
     }
     
-    @PostMapping("/search")
+    @GetMapping("/search-results")
     @ResponseBody
-    public ResponseEntity<HashMap<String, ArrayList<String>>> searchResults(@RequestBody Map<String, String> query, @RequestParam int page) {
+    public ResponseEntity<Map<String, Object>> searchResults(@RequestParam String query, @RequestParam int page) {
         try {
-            String queryString = query.get("query");
-            System.out.println("Pesquisando: " + queryString);
-            HashMap<String, ArrayList<String>> results = sv.pesquisar(queryString);
+            HashMap<String, ArrayList<String>> results = sv.pesquisar(query);
             
-            // Paginação
             int pageSize = 10;
             List<Map.Entry<String, ArrayList<String>>> resultList = new ArrayList<>(results.entrySet());
             int fromIndex = page * pageSize;
@@ -73,10 +65,11 @@ public class SearchController {
                 paginatedResults.put(entry.getKey(), entry.getValue());
             }
             
-            return ResponseEntity.ok(paginatedResults);
+            Map<String, Object> response = new HashMap<>();
+            response.put("results", paginatedResults);
+            response.put("isLastPage", toIndex == resultList.size());
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.status(500).body(null);
         }
     }

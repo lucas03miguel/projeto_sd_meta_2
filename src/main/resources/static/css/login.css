@@ -91,3 +91,13 @@ button#registerButton:hover {
         transform: translateX(5px);
     }
 }
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    display: none;
+}
+
+.error {
+    border-color: red;
+}

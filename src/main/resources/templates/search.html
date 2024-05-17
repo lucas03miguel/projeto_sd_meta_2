@@ -1,40 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Results</title>
   <link rel="stylesheet" href="css/search.css">
 </head>
-
 <body>
-  <div class="navbar">
-    <a href="http://localhost:8080/dashboard">Dashboard</a>
+<div class="navbar">
+  <a href="http://localhost:8080/dashboard">Dashboard</a>
+</div>
+<div class="search-container">
+  <h1>Search Results</h1>
+  <!-- Search Results -->
+  <div id="searchResults">
+    <ul id="searchResultList"></ul>
+    <div id="paginationControls"></div>
   </div>
-  <div class="search-container">
-    <h1>Search Results</h1>
-    <!-- Search Results -->
-    <div id="searchResults">
-      <ul id="searchResultList">
-        <li>
-          <div>
-            <strong>Title:</strong> Programa Performativo
-            <br>
-            <strong>URL:</strong> <a href="http://www.uc.pt/inquiete/programma/programma-performativo/">http://www.uc.pt/inquiete/programma/programma-performativo/</a>
-            <br>
-            <strong>Citation:</strong> Utilizamos cookies no nosso site, próprios e de terceiros, para garantir o funcionamento adequado, melhorar a sua experiência de utilização, personalizar conteúdos ao longo deste website, efetuar análises de utilização, recomendar conteúdos com base nas suas preferências, apresentar anúncios noutros sites que podem ser do seu interesse e facilitar a interação nas redes sociais.
-          </div>
-        </li>
-        <!-- Additional list items go here -->
-      </ul>
-      <div id="paginationControls">
-        <button>Previous</button>
-        <button>Next</button>
-      </div>
-    </div>
-  </div>
-  <script src="js/functions.js"></script>
+</div>
+<script src="js/functions.js"></script>
 </body>
-
 </html>
