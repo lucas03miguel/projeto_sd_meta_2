@@ -3,7 +3,7 @@ window.onload = function () {
     const error = urlParams.get('error');
 
     if (error) {
-        console.log(error);
+        alert('Crendiciais inválidas!');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         usernameInput.classList.add('error');
