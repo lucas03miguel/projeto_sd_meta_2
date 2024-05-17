@@ -10,7 +10,7 @@ window.onload = function () {
         shakeElement(usernameInput);
         shakeElement(passwordInput);
 
-        alert('Crendiciais inválidas!');
+        alert('Credenciais inválidas!');
     }
 }
 
@@ -36,37 +36,13 @@ function submitURL() {
         },
         body: JSON.stringify({url})
     })
-        .then(response => {
-            if (response.ok) {
-                alert('URL successfully indexed!');
-            } else {
-                alert('Failed to index URL.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while indexing the URL.');
-        });
-}
-
-
-//verificar
-function submitURL() {
-    const url = document.getElementById('urlInput').value;
-    fetch('/index-url', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({url})
-    })
     .then(response => {
         if (response.ok) {
             alert('URL successfully indexed!');
-            document.getElementById('urlInput').value = ''; // Clear the input field
         } else {
             alert('Failed to index URL.');
         }
+        document.getElementById('urlInput').value = ''; // Clear the input field
     })
     .catch(error => {
         console.error('Error:', error);

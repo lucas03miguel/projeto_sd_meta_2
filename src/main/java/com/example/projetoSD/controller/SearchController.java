@@ -3,6 +3,8 @@ package com.example.projetoSD.controller;
 import com.example.projetoSD.interfaces.RMIServerInterface;
 import com.example.projetoSD.model.IndexedUrl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,25 +23,18 @@ public class SearchController {
 
     @PostMapping("/index-url")
     @ResponseBody
-    public String indexUrl(@RequestBody IndexedUrl indexedUrl) {
-        if (isValidUrl(indexedUrl.getUrl())) {
-            try {
-                sv.indexar(indexedUrl.getUrl());
-                return "URL successfully indexed.";
-            } catch (Exception e) {
-                return "Failed to index URL.";
+    public ResponseEntity<String> indexUrl(@RequestBody IndexedUrl indexedUrl) {
+        try {
+            String res = sv.indexar(indexedUrl.getUrl());
+            System.out.println(res);
+            if (res.equals("URL valido")) {
+                return ResponseEntity.ok("URL adicionado com sucesso!");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to index URL.");
             }
-        } else {
-            return "Invalid URL.";
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to index URL.");
         }
     }
 
-    private boolean isValidUrl(String url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (MalformedURLException e) {
-            return false;
-        }
-    }
 }
