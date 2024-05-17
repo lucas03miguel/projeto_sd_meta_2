@@ -51,9 +51,26 @@ function submitURL() {
 
 
 //verificar
-function submitSearch() {
-    const searchInput = document.getElementById('searchInput').value;
-    if (searchInput) {
-        window.location.href = '/search?query=' + searchInput;
-    }
+function submitURL() {
+    const url = document.getElementById('urlInput').value;
+    fetch('/index-url', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({url})
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('URL successfully indexed!');
+            document.getElementById('urlInput').value = ''; // Clear the input field
+        } else {
+            alert('Failed to index URL.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while indexing the URL.');
+    });
 }
+
