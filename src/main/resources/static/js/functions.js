@@ -37,7 +37,7 @@ function submitURL() {
 let currentPage = 0;
 
 function fetchSearchResults(query) {
-    fetch(`/search/results?page=${currentPage}`, {
+    fetch(`/search?page=${currentPage}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -53,18 +53,11 @@ public class SearchController {
         return "search";
     }
     
-    @PostMapping("/search/results")
+    @PostMapping("/search")
     @ResponseBody
     public ResponseEntity<HashMap<String, ArrayList<String>>> searchResults(@RequestBody Map<String, String> query, @RequestParam int page) {
         try {
             String queryString = query.get("query");
-            if (queryString.length() < 1) {
-                HashMap<String, ArrayList<String>> error = new HashMap<>();
-                ArrayList<String> errorList = new ArrayList<>();
-                errorList.add("Pesquisa inválida (1+ caracteres)");
-                error.put("error", errorList);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-            }
             System.out.println("Pesquisando: " + queryString);
             HashMap<String, ArrayList<String>> results = sv.pesquisar(queryString);
             

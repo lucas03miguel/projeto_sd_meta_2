@@ -25,10 +25,6 @@ public class Barrel extends Thread implements Serializable {
      */
     private final MulticastSocket socket;
     /**
-     * HashMap que guarda o número de pesquisas feitas por cada Barrel
-     */
-    private final HashMap<Integer, Integer> pesquisas;
-    /**
      * HashMap que guarda as palavras e os urls onde elas aparecem
      */
     private final HashMap<String, HashSet<String>> index; //chave: palavra, valor: conjunto de urls
@@ -96,7 +92,6 @@ public class Barrel extends Thread implements Serializable {
         this.index = new HashMap<>();
         this.webInfo = new HashMap<>();
         this.searchs = new HashMap<>();
-        this.pesquisas = new HashMap<>();
         
         String linksFilename = "./src/main/java/com/example/projetoSD/database/links.txt"; //nome do arquivo que guarda os links
         String wordsFilename = "./src/main/java/com/example/projetoSD/database/words.txt"; //nome do arquivo que guarda as palavras
@@ -309,7 +304,6 @@ public class Barrel extends Thread implements Serializable {
             fr.close();
             
             this.nPesquisas++;
-            pesquisas.put(id, nPesquisas);
     
         } catch (Exception e) {
             System.out.println("[EXCEPTION] " + e);
@@ -423,8 +417,8 @@ public class Barrel extends Thread implements Serializable {
      * Método que retorna o número de pesquisas feitas
      * @return número de pesquisas
      */
-    public HashMap<Integer, Integer> getNPesquisas() {
-        return this.pesquisas;
+    public Integer getNPesquisas() {
+        return this.nPesquisas;
     }
     
     /**

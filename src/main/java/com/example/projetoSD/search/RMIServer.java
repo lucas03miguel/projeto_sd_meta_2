@@ -219,8 +219,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         HashMap<String, ArrayList<String>> aux = new HashMap<>();
         HashMap<Integer, Double> tempos = new HashMap<>();
     
-        System.out.println("[SERVER] Pesquisando por: " + s);
+        System.out.println("Recebido " + s);
         for (String palavra : palavras) {
+            System.out.println("[SERVER] Pesquisando por: " + palavra);
             boolean pesquisaRealizada = false;
             while (!pesquisaRealizada) {
                 try {
@@ -243,6 +244,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
                 }
             }
         }
+        
         HashMap<Integer, Integer> nPesquisas = barrel.getNPesquisas();
         for (Integer id: tempos.keySet()) {
             temposMedios.put(id, tempos.get(id) / nPesquisas.get(id));
@@ -253,7 +255,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
             else resp.put(url, aux.get(url));
         }
     
-        System.out.println("[SERVER] Pesquisa concluída. " + resp);
+        System.out.println("[SERVER] Pesquisa concluída. ");
         return resp;
     }
     

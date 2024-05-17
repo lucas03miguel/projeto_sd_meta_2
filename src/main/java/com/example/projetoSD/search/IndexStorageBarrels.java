@@ -36,7 +36,7 @@ public class IndexStorageBarrels extends UnicastRemoteObject implements RMIBarre
     /**
      * numero de pesquisas
      */
-    private HashMap<Integer, Integer> nPesquisas;
+    private HashMap<Integer, Integer> pesquisas;
     
     /**
      * Construtor da classe IndexStorageBarrels.
@@ -51,7 +51,7 @@ public class IndexStorageBarrels extends UnicastRemoteObject implements RMIBarre
         super();
         this.id = id;
         this.barrelsThreads = new ArrayList<>();
-        this.nPesquisas = new HashMap<>();
+        this.pesquisas = new HashMap<>();
     
         try {
             Registry r = LocateRegistry.createRegistry(port);
@@ -132,7 +132,8 @@ public class IndexStorageBarrels extends UnicastRemoteObject implements RMIBarre
         }
         
         HashMap<String, ArrayList<String>> result = b.obterLinks(s);
-        this.nPesquisas = b.getNPesquisas();
+        Integer nPesquisas = b.getNPesquisas();
+        this.pesquisas.put(id, nPesquisas);
         return result;
     }
     
@@ -175,7 +176,7 @@ public class IndexStorageBarrels extends UnicastRemoteObject implements RMIBarre
      */
     @Override
     public HashMap<Integer, Integer> getNPesquisas() throws RemoteException {
-        return this.nPesquisas;
+        return this.pesquisas;
     }
     
     /**
