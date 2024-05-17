@@ -42,7 +42,7 @@ public class AuthController {
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("formRequest", new User());
-        return "register";
+        return "login";
     }
     
     @PostMapping("/register")

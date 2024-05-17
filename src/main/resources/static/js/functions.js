@@ -3,13 +3,14 @@ window.onload = function () {
     const error = urlParams.get('error');
 
     if (error) {
-        alert('Crendiciais inválidas!');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         usernameInput.classList.add('error');
         passwordInput.classList.add('error');
         shakeElement(usernameInput);
         shakeElement(passwordInput);
+
+        alert('Crendiciais inválidas!');
     }
 }
 
@@ -24,4 +25,35 @@ function shakeElement(element) {
     setTimeout(function() {
         element.classList.remove('shake');
     }, 500);
+}
+
+function submitURL() {
+    const url = document.getElementById('urlInput').value;
+    fetch('/index-url', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({url})
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('URL successfully indexed!');
+            } else {
+                alert('Failed to index URL.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while indexing the URL.');
+        });
+}
+
+
+//verificar
+function submitSearch() {
+    const searchInput = document.getElementById('searchInput').value;
+    if (searchInput) {
+        window.location.href = '/search?query=' + searchInput;
+    }
 }

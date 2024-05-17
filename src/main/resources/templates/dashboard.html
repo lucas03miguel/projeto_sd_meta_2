@@ -2,32 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device=width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <h1>Googol</h1>
-        <!-- Search Form -->
-        <form id="searchForm">
-            <input type="text" id="searchInput" placeholder="Enter search query">
-            <button type="button" onclick="submitSearch()">Search</button>
-        </form>
+<div class="dashboard-container">
+    <h1>Googol</h1>
+    <!-- Search Form -->
+    <form id="searchForm">
+        <label for="searchInput"></label><input type="text" id="searchInput" placeholder="Enter search query">
+        <button type="button" onclick="submitSearch()">Search</button>
+    </form>
 
-        <!-- URL Indexing Form -->
-        <form id="urlForm">
-            <input type="text" id="urlInput" placeholder="Enter URL to index">
-            <button type="button" onclick="submitURL()">Index URL</button>
-        </form>
+    <!-- URL Indexing Form -->
+    <form id="urlForm">
+        <label for="urlInput"></label><input type="text" id="urlInput" placeholder="Enter URL to index">
+        <button type="button" onclick="submitURL()">Index URL</button>
+    </form>
 
-        <!-- Display Top 10 Searches -->
-        <div id="topSearches">
-            <h2>Top 10 Searches</h2>
-            <ul id="searchList"></ul>
-        </div>
+    <!-- Display Top 10 Searches -->
+    <div id="topSearches">
+        <h2>Top 10 Searches</h2>
+        <ul id="searchList"></ul>
     </div>
-
-    <script src="js/dashboard_actions.js"></script>
+</div>
+<script src="js/functions.js"></script>
 </body>
 </html>

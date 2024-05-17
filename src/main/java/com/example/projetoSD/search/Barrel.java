@@ -98,10 +98,10 @@ public class Barrel extends Thread implements Serializable {
         this.searchs = new HashMap<>();
         this.pesquisas = new HashMap<>();
         
-        String linksFilename = "./database/links.txt"; //nome do arquivo que guarda os links
-        String wordsFilename = "./database/words.txt"; //nome do arquivo que guarda as palavras
-        String textSnippetFilename = "./database/info.txt"; //nome do arquivo que guarda os snippets de texto
-        String searchsFilename = "./database/searchs.txt"; //nome do arquivo que guarda as pesquisas
+        String linksFilename = "./src/main/java/com/example/projetoSD/database/links.txt"; //nome do arquivo que guarda os links
+        String wordsFilename = "./src/main/java/com/example/projetoSD/database/words.txt"; //nome do arquivo que guarda as palavras
+        String textSnippetFilename = "./src/main/java/com/example/projetoSD/database/info.txt"; //nome do arquivo que guarda os snippets de texto
+        String searchsFilename = "./src/main/java/com/example/projetoSD/database/searchs.txt"; //nome do arquivo que guarda as pesquisas
         
         this.linksFile = new File(linksFilename);
         this.wordsFile = new File(wordsFilename);
