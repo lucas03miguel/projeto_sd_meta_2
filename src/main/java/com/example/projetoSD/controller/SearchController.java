@@ -44,13 +44,18 @@ public class SearchController {
     
     @GetMapping("/search")
     public String searchPage(@RequestParam String query, Model model) {
+        if (query.length() < 1) {
+            model.addAttribute("error", "Pesquisa inválida (1+ caracteres)");
+            return "redirect:/dashboard?error=true";
+        }
+        
         model.addAttribute("query", query);
         return "search";
     }
     
-    @PostMapping("/search")
+    @PostMapping("/search/results")
     @ResponseBody
-    public ResponseEntity<HashMap<String, ArrayList<String>>> search(@RequestBody Map<String, String> query, @RequestParam int page) {
+    public ResponseEntity<HashMap<String, ArrayList<String>>> searchResults(@RequestBody Map<String, String> query, @RequestParam int page) {
         try {
             String queryString = query.get("query");
             if (queryString.length() < 1) {
@@ -62,14 +67,13 @@ public class SearchController {
             }
             System.out.println("Pesquisando: " + queryString);
             HashMap<String, ArrayList<String>> results = sv.pesquisar(queryString);
-        
+            
             // Paginação
             int pageSize = 10;
             List<Map.Entry<String, ArrayList<String>>> resultList = new ArrayList<>(results.entrySet());
             int fromIndex = page * pageSize;
             int toIndex = Math.min(fromIndex + pageSize, resultList.size());
-            System.out.println("aqui");
-        
+            
             HashMap<String, ArrayList<String>> paginatedResults = new HashMap<>();
             for (int i = fromIndex; i < toIndex; i++) {
                 Map.Entry<String, ArrayList<String>> entry = resultList.get(i);
@@ -83,5 +87,4 @@ public class SearchController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
 }

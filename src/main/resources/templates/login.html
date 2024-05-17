@@ -35,6 +35,25 @@
         </div>
     </form>
 </div>
-    <script src="js/functions.js"></script>
+
+<script src="js/functions.js"></script>
+<script>
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        console.log(error);
+
+        if (error) {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            usernameInput.classList.add('error');
+            passwordInput.classList.add('error');
+            shakeElement(usernameInput);
+            shakeElement(passwordInput);
+
+            alert('Credenciais inválidas!');
+        }
+    }
+</script>
 </body>
 </html>
