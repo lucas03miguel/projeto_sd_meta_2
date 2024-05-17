@@ -4,6 +4,7 @@
 package com.example.projetoSD.search;
 
 import com.example.projetoSD.interfaces.URLQueueInterface;
+import com.example.projetoSD.model.IndexedUrl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -202,7 +203,7 @@ public class Downloader extends Thread implements Remote {
             String textSnippet = extrairCitacao(document);
             Set<String> words = extrairPalavras(document);
     
-            WebPage webPage = new WebPage(url, title, textSnippet, words);
+            IndexedUrl webPage = new IndexedUrl(url, title, textSnippet, words);
             
             Elements links = document.select("a[href]");
             for (Element link : links) {
@@ -238,7 +239,7 @@ public class Downloader extends Thread implements Remote {
      * @param webPage página web processada
      * @param links links encontrados na página web
      */
-    private void enviarParaBarrels(WebPage webPage, ArrayList<String> links) {
+    private void enviarParaBarrels(IndexedUrl webPage, ArrayList<String> links) {
         Set<String> listaPalavras = webPage.getWords();
         String url = webPage.getUrl();
         String title = webPage.getTitle();
@@ -289,98 +290,100 @@ public class Downloader extends Thread implements Remote {
     }
 }
 
-/**
- * A classe WebPage guarda as informações de uma página web tal como URL, título, palavras e citação.
- */
-class WebPage {
-    /**
-     * URL da página web.
-     */
-    private final String url;
-    /**
-     * Título da página web.
-     */
-    private String title;
-    /**
-     * Citação da página web.
-     */
-    private String textSnippet;
-    /**
-     * Palavras da página web.
-     */
-    private final Set<String> words;
-    
-    /**
-     * Construtor da classe WebPage.
-     *
-     * @param url URL da página web
-     * @param title título da página web
-     * @param textSnippet citação da página web
-     * @param words palavras da página web
-     */
-    public WebPage(String url, String title, String textSnippet, Set<String> words) {
-        this.url = url.replaceAll("[\n;|]+", "");
-        this.title = title.replaceAll("[\n;|]+", "");
-        this.textSnippet = textSnippet.replaceAll("[\n;|]+", "");
-        Set<String> wordsCopy = new HashSet<>();
-        for (String word : words) {
-            word = word.replaceAll("[\n;|]+", "");
-            wordsCopy.add(word);
-        }
-        this.words = wordsCopy;
-    }
-    
-    /**
-     * Obtém o URL da página web.
-     *
-     * @return URL da página web
-     */
-    public String getUrl() {
-        return url;
-    }
-    
-    /**
-     * Obtém o título da página web.
-     *
-     * @return título da página web
-     */
-    public String getTitle() {
-        return title;
-    }
-    
-    /**
-     * Define o título da página web.
-     *
-     * @param title título da página web
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    /**
-     * Obtém a citação da página web.
-     *
-     * @return citação da página web
-     */
-    public String getTextSnippet() {
-        return textSnippet;
-    }
-    
-    /**
-     * Define a citação da página web.
-     *
-     * @param textSnippet citação da página web
-     */
-    public void setTextSnippet(String textSnippet) {
-        this.textSnippet = textSnippet;
-    }
-    
-    /**
-     * Obtém as palavras da página web.
-     *
-     * @return as palavras da página web
-     */
-    public Set<String> getWords() {
-        return words;
-    }
-}
+
+
+///**
+// * A classe WebPage guarda as informações de uma página web tal como URL, título, palavras e citação.
+// */
+//class WebPage {
+//    /**
+//     * URL da página web.
+//     */
+//    private final String url;
+//    /**
+//     * Título da página web.
+//     */
+//    private String title;
+//    /**
+//     * Citação da página web.
+//     */
+//    private String textSnippet;
+//    /**
+//     * Palavras da página web.
+//     */
+//    private final Set<String> words;
+//
+//    /**
+//     * Construtor da classe WebPage.
+//     *
+//     * @param url URL da página web
+//     * @param title título da página web
+//     * @param textSnippet citação da página web
+//     * @param words palavras da página web
+//     */
+//    public WebPage(String url, String title, String textSnippet, Set<String> words) {
+//        this.url = url.replaceAll("[\n;|]+", "");
+//        this.title = title.replaceAll("[\n;|]+", "");
+//        this.textSnippet = textSnippet.replaceAll("[\n;|]+", "");
+//        Set<String> wordsCopy = new HashSet<>();
+//        for (String word : words) {
+//            word = word.replaceAll("[\n;|]+", "");
+//            wordsCopy.add(word);
+//        }
+//        this.words = wordsCopy;
+//    }
+//
+//    /**
+//     * Obtém o URL da página web.
+//     *
+//     * @return URL da página web
+//     */
+//    public String getUrl() {
+//        return url;
+//    }
+//
+//    /**
+//     * Obtém o título da página web.
+//     *
+//     * @return título da página web
+//     */
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    /**
+//     * Define o título da página web.
+//     *
+//     * @param title título da página web
+//     */
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+//
+//    /**
+//     * Obtém a citação da página web.
+//     *
+//     * @return citação da página web
+//     */
+//    public String getTextSnippet() {
+//        return textSnippet;
+//    }
+//
+//    /**
+//     * Define a citação da página web.
+//     *
+//     * @param textSnippet citação da página web
+//     */
+//    public void setTextSnippet(String textSnippet) {
+//        this.textSnippet = textSnippet;
+//    }
+//
+//    /**
+//     * Obtém as palavras da página web.
+//     *
+//     * @return as palavras da página web
+//     */
+//    public Set<String> getWords() {
+//        return words;
+//    }
+//}
