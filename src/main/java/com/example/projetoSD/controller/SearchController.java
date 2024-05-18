@@ -1,6 +1,5 @@
 package com.example.projetoSD.controller;
 
-
 import com.example.projetoSD.interfaces.RMIServerInterface;
 import com.example.projetoSD.model.IndexedUrl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +41,18 @@ public class SearchController {
         }
     }
     
-    /*
     @GetMapping("/search-url")
-    public String searchPage(@RequestParam String url, Model model) {
-        model.addAttribute("search-url", url);
-        return "search-url";
-    }
-     */
-    
-    
-    @GetMapping("/search-url")
-    public String searchUrl(Model model) {
-        System.out.println("search-url");
-        return "search-url";
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> searchUrl(@RequestParam String url) {
+        try {
+            List<String> urls = sv.obterLigacoes(url);
+            Map<String, Object> response = new HashMap<>();
+            response.put("results", urls);
+            return ResponseEntity.ok(response);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
     
     @GetMapping("/search")
@@ -99,7 +97,7 @@ public class SearchController {
     }
     
     private void updateTopSearches() {
-        messagingTemplate.convertAndSend("/topic/update-top-searches", "update");  // Envia a mensagem ao WebSocket
+        messagingTemplate.convertAndSend("/topic/update-top-searches", "update");
     }
     
     @GetMapping("/top-searches-list")
@@ -129,11 +127,9 @@ public class SearchController {
             Map<String, Object> response = new HashMap<>();
             response.put("results", barrels);
             model.addAttribute("barrels", barrels);
-            System.out.println("Recebi barrels: " + barrels);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
     }
-    
 }

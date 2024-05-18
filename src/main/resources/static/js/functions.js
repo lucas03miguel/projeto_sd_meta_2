@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (searchInput) {
         searchInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
-                handleSearch(); // Call the search function
+                event.preventDefault();
+                handleSearch();
             }
         });
     }
@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (urlInput) {
         urlInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
-                indexUrl(); // Call the URL indexing function
+                event.preventDefault();
+                indexUrl();
             }
         });
     }
@@ -24,17 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (urlSearchInput) {
         urlSearchInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
-                searchUrl(); // Call the URL search function
+                event.preventDefault();
+                searchUrl();
             }
         });
     }
 
     connect();
-
-    //if (document.getElementById('searchForm')) {
-    //    setupWebSocketHandlers();
-    //}
 });
 
 function handleError() {
@@ -50,12 +46,6 @@ function shakeElement(element) {
     }, 500);
 }
 
-function submitRegisterForm() {
-    document.getElementById('newUsername').value = document.getElementById('username').value;
-    document.getElementById('newPassword').value = document.getElementById('password').value;
-    document.getElementById('registerForm').submit();
-}
-
 function handleSearch() {
     const query = document.getElementById('searchInput').value;
     if (query.trim().length < 1) {
@@ -63,12 +53,10 @@ function handleSearch() {
         return;
     }
     window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
-    console.log('Search query:', query);
     sendMessage();
 }
 
 function loadSearchResults(query, page) {
-    console.log('Loading search results for query:', query, 'page:', page);
     fetch(`/search-results?query=${encodeURIComponent(query)}&page=${page}`, {
         method: 'GET',
         headers: {
@@ -77,10 +65,9 @@ function loadSearchResults(query, page) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Data received:', data);
             const searchResultList = document.getElementById('searchResultList');
             const paginationControls = document.getElementById('paginationControls');
-            searchResultList.innerHTML = ''; // Clear previous results
+            searchResultList.innerHTML = '';
 
             if (data.results && typeof data.results === 'object') {
                 for (const [url, details] of Object.entries(data.results)) {
@@ -88,15 +75,12 @@ function loadSearchResults(query, page) {
                     const snippet = details[1] || 'No snippet available';
                     const li = document.createElement('li');
                     li.innerHTML = `<strong>Title:</strong> ${title}<br>
-                                    <strong>URL:</strong> <a href="${url}" target="_blank">${url}</a><br>
-                                    <strong>Snippet:</strong> ${snippet}`;
+                                <strong>URL:</strong> <a href="${url}" target="_blank">${url}</a><br>
+                                <strong>Snippet:</strong> ${snippet}`;
                     searchResultList.appendChild(li);
                 }
-            } else {
-                console.error('Results is not an object:', data.results);
             }
 
-            // Pagination controls
             paginationControls.innerHTML = '';
             if (!data.isLastPage) {
                 const nextButton = document.createElement('button');
@@ -153,10 +137,10 @@ function indexUrl() {
 function searchUrl() {
     const url = document.getElementById('urlSearchInput').value;
     window.location.href = `/search-url?url=${encodeURIComponent(url)}`;
+}
 
-    /*
-    console.log(url)
-    fetch(`/search-url?url=${url}`, {
+function loadURLResults(url) {
+    fetch(`/search-url?url=${encodeURIComponent(url)}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -164,29 +148,25 @@ function searchUrl() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Data received:', data);
             const searchResultList = document.getElementById('searchResultList');
-            searchResultList.innerHTML = ''; // Clear previous results
+            searchResultList.innerHTML = '';
 
-            if (data.results && typeof data.results === 'object') {
-                for (const url of Object.entries(data.results)) {
+            if (Array.isArray(data)) {
+                for (const resultUrl of data) {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>URL:</strong> ${url}`;
+                    li.innerHTML = `<strong>URL:</strong> <a href="${resultUrl}" target="_blank">${resultUrl}</a>`;
                     searchResultList.appendChild(li);
                 }
             } else {
-                console.error('Results is not an object:', data.results);
+                console.error('Expected array but got:', data);
             }
         })
         .catch(error => {
             console.error('Error:', error);
         });
-
-     */
 }
 
 let stompClient = null;
-
 function connect() {
     if (typeof SockJS !== 'undefined' && typeof Stomp !== 'undefined') {
         const socket = new SockJS('/my-websocket');
@@ -199,13 +179,10 @@ function connect() {
 
 function sendMessage() {
     const query = document.getElementById('searchInput').value;
-    console.log('Sending message:', query);
-
     stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
     $("#message").val("");
     $("#searchInput").val("");
 }
-
 
 function redirectTopSearches() {
     window.location.href = '/top-searches';

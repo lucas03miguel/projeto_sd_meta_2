@@ -36,6 +36,10 @@
     <button type="button" onclick="redirectTopSearches()">View Top Searches</button>
     <button type="button" onclick="redirectBarrels()">View Barrel Information</button>
 
+    <!-- Search Results -->
+    <div id="searchResults">
+        <ul id="searchResultList"></ul>
+    </div>
 </div>
 <script src="js/functions.js"></script>
 <script>
@@ -51,6 +55,11 @@
             const urlInput = document.getElementById('urlInput');
             urlInput.classList.add('error');
             shakeElement(urlInput);
+        }
+
+        const url = urlParams.get('search-url');
+        if (url) {
+            loadURLResults(url);
         }
     }
 </script>
