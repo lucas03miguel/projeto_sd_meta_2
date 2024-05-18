@@ -2,30 +2,55 @@ document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('searchInput');
     const urlInput = document.getElementById('urlInput');
 
-    searchInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default form submission
-            handleSearch(); // Call the search function
-        }
-    });
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                handleSearch(); // Call the search function
+            }
+        });
+    }
 
-    urlInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default form submission
-            indexUrl(); // Call the URL indexing function
-        }
-    });
+    if (urlInput) {
+        urlInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                indexUrl(); // Call the URL indexing function
+            }
+        });
+    }
 
-    // Removido para evitar indexação dupla
-    // urlButton.addEventListener('click', function() {
-    //     indexUrl(); // Call the URL indexing function
-    // });
+    if (document.getElementById('send')) {
+        setupWebSocketHandlers();
+    }
 });
+
+function handleError() {
+    const urlInput = document.getElementById('urlInput');
+    shakeElement(urlInput);
+    urlInput.style.border = '2px solid red';
+}
+
+function shakeElement(element) {
+    element.classList.add('shake');
+    setTimeout(function() {
+        element.classList.remove('shake');
+    }, 500);
+}
 
 function submitRegisterForm() {
     document.getElementById('newUsername').value = document.getElementById('username').value;
     document.getElementById('newPassword').value = document.getElementById('password').value;
     document.getElementById('registerForm').submit();
+}
+
+function handleSearch() {
+    const query = document.getElementById('searchInput').value;
+    if (query.trim().length < 1) {
+        shakeElement(document.getElementById('searchInput'));
+        return;
+    }
+    window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
 }
 
 function loadSearchResults(query, page) {
@@ -88,15 +113,6 @@ function updateURL(query, page) {
     history.pushState({ path: newURL }, '', newURL);
 }
 
-function handleSearch() {
-    const query = document.getElementById('searchInput').value;
-    if (query.trim().length < 1) {
-        shakeElement(document.getElementById('searchInput'));
-        return;
-    }
-    window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
-}
-
 function indexUrl() {
     const url = document.getElementById('urlInput').value;
     fetch('/index-url', {
@@ -120,15 +136,51 @@ function indexUrl() {
         });
 }
 
-function handleError() {
-    const urlInput = document.getElementById('urlInput');
-    shakeElement(urlInput);
-    urlInput.style.border = '2px solid red';
+function redirectToTopSearches() {
+    window.location.href = '/top-searches';
 }
 
-function shakeElement(element) {
-    element.classList.add('shake');
-    setTimeout(function() {
-        element.classList.remove('shake');
-    }, 500);
+let stompClient = null;
+function connect() {
+    if (typeof SockJS !== 'undefined' && typeof Stomp !== 'undefined') {
+        const socket = new SockJS('/my-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (message) {
+                showMessage(JSON.parse(message.body).content);
+            });
+
+            // Fetch previous messages
+            fetch('/messages')
+                .then(response => response.json())
+                .then(messages => {
+                    messages.forEach(message => showMessage(message.content));
+                });
+        });
+    }
+}
+
+
+function sendMessage() {
+    const query = document.getElementById('message').value;
+    console.log('Sending message:', query);
+    stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
+    $("#message").val("");
+}
+
+function showMessage(message) {
+    if (typeof $ !== 'undefined') {
+        $("#messages").append("<tr><td>" + message + "</td></tr>");
+    }
+}
+
+function setupWebSocketHandlers() {
+    $(function () {
+        $("form").on('submit', function (e) {
+            e.preventDefault();
+        });
+        $("#connect").click(function() { connect(); });
+        $("#send").click(function() { sendMessage(); });
+    });
 }

@@ -86,9 +86,9 @@ public class SearchController {
         }
     }
     
-    @GetMapping("/topsearches")
+    @GetMapping("/top-searches")
     public String topSearches(Model model) {
-        return "topsearches";
+        return "top-searches";
     }
     
     

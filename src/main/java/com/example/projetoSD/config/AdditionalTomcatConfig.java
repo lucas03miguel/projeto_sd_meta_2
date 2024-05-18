@@ -1,4 +1,4 @@
-package com.example.projetoSD.properties;
+package com.example.projetoSD.config;
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;

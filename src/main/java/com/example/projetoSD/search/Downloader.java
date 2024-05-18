@@ -120,7 +120,7 @@ public class Downloader extends Thread implements Remote {
     public static void main(String[] args) {
         System.getProperties().put("java.security.policy", "policy.all");
         Properties prop = new Properties();
-        String SETTINGS_PATH = "./src/main/java/com/example/projetoSD/properties/configuration.properties";
+        String SETTINGS_PATH = "./src/main/java/com/example/projetoSD/config/configuration.properties";
         
         Downloader d = null;
         try {

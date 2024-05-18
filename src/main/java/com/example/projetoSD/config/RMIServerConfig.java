@@ -1,4 +1,4 @@
-package com.example.projetoSD.web;
+package com.example.projetoSD.config;
 
 import com.example.projetoSD.interfaces.RMIServerInterface;
 import org.springframework.beans.factory.annotation.Value;

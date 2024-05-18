@@ -143,7 +143,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
         System.getProperties().put("java.security.policy", "policy.all");
         Properties prop = new Properties();
     
-        String SETTINGS_PATH = "./src/main/java/com/example/projetoSD/properties/configuration.properties";
+        String SETTINGS_PATH = "./src/main/java/com/example/projetoSD/config/configuration.properties";
         try {
             prop.load(new FileInputStream(SETTINGS_PATH));
             int rmiPort = Integer.parseInt(prop.getProperty("PORT_SERVER"));
