@@ -142,6 +142,11 @@ function redirectToTopSearches() {
     window.location.href = '/top-searches';
 }
 
+function redirectToBarrelInfo() {
+    window.location.href = '/barrels';
+}
+
+
 let stompClient = null;
 function connect() {
     if (typeof SockJS !== 'undefined' && typeof Stomp !== 'undefined') {
