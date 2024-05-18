@@ -25,6 +25,7 @@
         const query = params.get('query');
         const page = parseInt(params.get('page'), 10) || 0;
         console.log('Initializing search results page with query:', query, 'page:', page);
+
         if (query) {
             loadSearchResults(query, page);
         }

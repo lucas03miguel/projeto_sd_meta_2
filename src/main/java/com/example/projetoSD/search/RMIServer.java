@@ -269,9 +269,9 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
     public int checkLogin(String username, String password) throws RemoteException {
         //TODO: Modificar esta shit porque nao esta bem. temos que usar o fucking barril
         int validLogins = 0;
-        String filePath = "./database/users.txt";
+        String filePath = "./src/main/java/com/example/projetoSD/database/users.txt";
         
-        Path dirPath = Path.of("./database");
+        Path dirPath = Path.of("./src/main/java/com/example/projetoSD/database");
         if (!Files.exists(dirPath)) {
             try {
                 Files.createDirectories(dirPath);
@@ -321,7 +321,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerInterface
      * @throws RemoteException se ocorrer um erro durante a conexão remota
      */
     public String checkRegisto(String username, String password) throws RemoteException {
-        String filePath = "./database/users.txt";
+        String filePath = "./src/main/java/com/example/projetoSD/database/users.txt";
         
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
             bw.write(username + " " + password + "\n");

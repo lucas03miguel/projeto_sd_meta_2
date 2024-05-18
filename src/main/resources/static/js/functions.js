@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (document.getElementById('send')) {
-        setupWebSocketHandlers();
-    }
+    //if (document.getElementById('searchForm')) {
+    //    setupWebSocketHandlers();
+    //}
 });
 
 function handleError() {
@@ -51,6 +51,8 @@ function handleSearch() {
         return;
     }
     window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
+    console.log('Search query:', query);
+    sendMessage();
 }
 
 function loadSearchResults(query, page) {
@@ -163,10 +165,12 @@ function connect() {
 
 
 function sendMessage() {
-    const query = document.getElementById('message').value;
+    const query = document.getElementById('searchInput').value;
     console.log('Sending message:', query);
+
     stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
     $("#message").val("");
+    $("#searchInput").val("");
 }
 
 function showMessage(message) {
@@ -180,7 +184,6 @@ function setupWebSocketHandlers() {
         $("form").on('submit', function (e) {
             e.preventDefault();
         });
-        $("#connect").click(function() { connect(); });
-        $("#send").click(function() { sendMessage(); });
+        //$("#searchForm").click(function() { sendMessage(); });
     });
 }
