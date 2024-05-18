@@ -18,19 +18,36 @@
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 <script>
-    function updateTopSearchesList(topSearches) {
-        const listElement = document.getElementById('topSearchesList');
-        listElement.innerHTML = '';
+    function connect() {
+        const socket = new SockJS('/my-websocket');
+        const stompClient = Stomp.over(socket);
 
-        for (const [search, count] of Object.entries(topSearches)) {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${search}: ${count} times`;
-            listElement.appendChild(listItem);
-        }
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/update-top-searches', function () {
+                loadTopSearches();  // Atualiza a lista de top searches
+            });
+        });
+    }
+
+    function loadTopSearches() {
+        fetch('/top-searches-list')
+            .then(response => response.json())
+            .then(data => {
+                const listElement = document.getElementById('topSearchesList');
+                listElement.innerHTML = '';
+
+                for (const [search, count] of Object.entries(data.results)) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${search}: ${count} times`;
+                    listElement.appendChild(listItem);
+                }
+            })
+            .catch(error => console.error('Error loading top searches:', error));
     }
 
     window.onload = function () {
         connect();
+        loadTopSearches();
     };
 </script>
 </body>

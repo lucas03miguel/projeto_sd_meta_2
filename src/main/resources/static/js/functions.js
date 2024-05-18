@@ -1,9 +1,9 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById('searchInput');
     const urlInput = document.getElementById('urlInput');
 
     if (searchInput) {
-        searchInput.addEventListener('keydown', function(event) {
+        searchInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Prevent the default form submission
                 handleSearch(); // Call the search function
@@ -12,13 +12,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (urlInput) {
-        urlInput.addEventListener('keydown', function(event) {
+        urlInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Prevent the default form submission
                 indexUrl(); // Call the URL indexing function
             }
         });
     }
+    connect();
 
     //if (document.getElementById('searchForm')) {
     //    setupWebSocketHandlers();
@@ -33,7 +34,7 @@ function handleError() {
 
 function shakeElement(element) {
     element.classList.add('shake');
-    setTimeout(function() {
+    setTimeout(function () {
         element.classList.remove('shake');
     }, 500);
 }
@@ -112,7 +113,7 @@ function loadSearchResults(query, page) {
 
 function updateURL(query, page) {
     const newURL = `/search?query=${encodeURIComponent(query)}&page=${page}`;
-    history.pushState({ path: newURL }, '', newURL);
+    history.pushState({path: newURL}, '', newURL);
 }
 
 function indexUrl() {
@@ -122,7 +123,7 @@ function indexUrl() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({url})
     })
         .then(response => {
             if (response.ok) {
@@ -144,6 +145,7 @@ function redirectToBarrelInfo() {
 
 
 let stompClient = null;
+
 function connect() {
     if (typeof SockJS !== 'undefined' && typeof Stomp !== 'undefined') {
         const socket = new SockJS('/my-websocket');
@@ -183,26 +185,28 @@ function showMessage(message) {
 function handleTopSearches() {
     window.location.href = '/top-searches';
 
+    fetch('/top-searches', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
 
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received:', data);
+        const topSearchesList = document.getElementById('topSearchesList');
+        topSearchesList.innerHTML = ''; // Clear previous results
 
-    fetch('/top-searches')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Top searches:', data);
-            const topSearchesList = document.getElementById('topSearchesList');
-            topSearchesList.innerHTML = ''; // Clear previous results
-
-            if (data && Array.isArray(data)) {
-                data.forEach(search => {
-                    const li = document.createElement('li');
-                    li.textContent = search;
-                    topSearchesList.appendChild(li);
-                });
-            } else {
-                console.error('Top searches is not an array:', data);
+        if (data.results && typeof data.results === 'object') {
+            for (const [query, count] of Object.entries(data.results)) {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>Query:</strong> ${query}<br>
+                                <strong>Count:</strong> ${count}`;
+                topSearchesList.appendChild(li);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        } else {
+            console.error('Results is not an object:', data.results);
+        }
+    })
 }

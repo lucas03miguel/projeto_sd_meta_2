@@ -18,9 +18,7 @@ import java.util.*;
 public class SearchController {
     
     private final RMIServerInterface sv;
-    //private final WebSocketController webSocketController;
     private final SimpMessagingTemplate messagingTemplate;
-    
     
     @Autowired
     public SearchController(RMIServerInterface rmisv, SimpMessagingTemplate messagingTemplate) {
@@ -47,6 +45,7 @@ public class SearchController {
     public String searchPage(@RequestParam String query, @RequestParam int page, Model model) {
         model.addAttribute("query", query);
         model.addAttribute("page", page);
+        updateTopSearches();
         return "search";
     }
     
@@ -78,19 +77,24 @@ public class SearchController {
     
     @GetMapping("/top-searches")
     public String topSearches(Model model) {
-        updateTopSearches();
-        model.addAttribute("topSearchesList", new HashMap<String, Integer>());
         return "top-searches";
     }
     
     private void updateTopSearches() {
-        try {
-            HashMap<String, Integer> topSearches = sv.obterTopSearches();
-            messagingTemplate.convertAndSend("/topic/top-searches", topSearches);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        messagingTemplate.convertAndSend("/topic/update-top-searches", "update");  // Envia a mensagem ao WebSocket
     }
     
+    @GetMapping("/top-searches-list")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getTopSearches() {
+        try {
+            HashMap<String, Integer> results = sv.obterTopSearches();
+            Map<String, Object> response = new HashMap<>();
+            response.put("results", results);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
     
 }
