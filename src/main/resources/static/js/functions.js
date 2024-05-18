@@ -56,61 +56,6 @@ function handleSearch() {
     sendMessage();
 }
 
-function loadSearchResults(query, page) {
-    fetch(`/search-results?query=${encodeURIComponent(query)}&page=${page}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            const searchResultList = document.getElementById('searchResultList');
-            const paginationControls = document.getElementById('paginationControls');
-            searchResultList.innerHTML = '';
-
-            if (data.results && typeof data.results === 'object') {
-                for (const [url, details] of Object.entries(data.results)) {
-                    const title = details[0] || 'No title available';
-                    const snippet = details[1] || 'No snippet available';
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>Title:</strong> ${title}<br>
-                                <strong>URL:</strong> <a href="${url}" target="_blank">${url}</a><br>
-                                <strong>Snippet:</strong> ${snippet}`;
-                    searchResultList.appendChild(li);
-                }
-            }
-
-            paginationControls.innerHTML = '';
-            if (!data.isLastPage) {
-                const nextButton = document.createElement('button');
-                nextButton.textContent = 'Next';
-                nextButton.onclick = () => {
-                    updateURL(query, page + 1);
-                    loadSearchResults(query, page + 1);
-                };
-                paginationControls.appendChild(nextButton);
-            }
-            if (page > 0) {
-                const prevButton = document.createElement('button');
-                prevButton.textContent = 'Previous';
-                prevButton.onclick = () => {
-                    updateURL(query, page - 1);
-                    loadSearchResults(query, page - 1);
-                };
-                paginationControls.appendChild(prevButton);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
-function updateURL(query, page) {
-    const newURL = `/search?query=${encodeURIComponent(query)}&page=${page}`;
-    history.pushState({path: newURL}, '', newURL);
-}
-
 function indexUrl() {
     const url = document.getElementById('urlInput').value;
     fetch('/index-url', {
@@ -152,11 +97,11 @@ function loadURLResults(url) {
             searchResultList.innerHTML = '';
 
             if (Array.isArray(data)) {
-                for (const resultUrl of data) {
+                data.forEach(resultUrl => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>URL:</strong> <a href="${resultUrl}" target="_blank">${resultUrl}</a>`;
+                    li.innerHTML = `<a href="${resultUrl}" target="_blank">${resultUrl}</a>`;
                     searchResultList.appendChild(li);
-                }
+                });
             } else {
                 console.error('Expected array but got:', data);
             }
