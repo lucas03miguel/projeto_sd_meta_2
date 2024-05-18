@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Search Results</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/search-url.css">
 </head>
 <body>
 <div class="navbar">
     <a href="http://localhost:8080/dashboard">Dashboard</a>
 </div>
-<div class="search-container">
-    <h1>Search Results</h1>
+<div class="search-url-container">
+    <h1>URL Results</h1>
     <!-- Search Results -->
     <div id="searchResults">
         <ul id="searchResultList"></ul>
@@ -21,7 +21,7 @@
 <script>
     window.onload = function () {
         const params = new URLSearchParams(window.location.search);
-        const url = params.get('search-url');
+        const url = params.get('url');
         console.log('Initializing search results page with url:', url);
 
         if (url) {

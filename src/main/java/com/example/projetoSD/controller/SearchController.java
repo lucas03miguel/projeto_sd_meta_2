@@ -11,7 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -43,12 +46,10 @@ public class SearchController {
     
     @GetMapping("/search-url")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> searchUrl(@RequestParam String url) {
+    public ResponseEntity<List<String>> searchUrl(@RequestParam String url) {
         try {
             List<String> urls = sv.obterLigacoes(url);
-            Map<String, Object> response = new HashMap<>();
-            response.put("results", urls);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(urls);
         } catch (RemoteException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
