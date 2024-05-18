@@ -23,7 +23,7 @@
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, function (frame) {
-            stompClient.subscribe('/topic/update-top-searches', function () {
+            stompClient.subscribe('/topic/update-top-searches', function (message) {
                 loadTopSearches();  // Atualiza a lista de top searches
             });
         });
@@ -50,5 +50,6 @@
         loadTopSearches();
     };
 </script>
+
 </body>
 </html>

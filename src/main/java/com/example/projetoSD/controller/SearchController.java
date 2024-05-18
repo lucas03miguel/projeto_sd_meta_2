@@ -69,6 +69,7 @@ public class SearchController {
             Map<String, Object> response = new HashMap<>();
             response.put("results", paginatedResults);
             response.put("isLastPage", toIndex == resultList.size());
+            messagingTemplate.convertAndSend("/topic/update-top-searches", query);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
@@ -76,7 +77,8 @@ public class SearchController {
     }
     
     @GetMapping("/top-searches")
-    public String topSearches(Model model) {
+    public String topSearches(Model model) throws RemoteException {
+        model.addAttribute("topSearches", sv.obterTopSearches());
         return "top-searches";
     }
     
@@ -91,6 +93,27 @@ public class SearchController {
             HashMap<String, Integer> results = sv.obterTopSearches();
             Map<String, Object> response = new HashMap<>();
             response.put("results", results);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    
+    @GetMapping("/barrels")
+    public String barrelsPage(Model model) throws RemoteException {
+        model.addAttribute("barrels", sv.obterListaBarrels());
+        return "barrels";
+    }
+    
+    @GetMapping("/barrels-list")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> barrels(Model model) {
+        try {
+            List<String> barrels = sv.obterListaBarrels();
+            Map<String, Object> response = new HashMap<>();
+            response.put("results", barrels);
+            model.addAttribute("barrels", barrels);
+            System.out.println("Recebi barrels: " + barrels);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);

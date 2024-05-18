@@ -7,15 +7,50 @@
     <link rel="stylesheet" href="css/barrels.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="http://localhost:8080/dashboard">Dashboard</a>
-    </div>
-    <div class="barrels-container">
-        <h1>Active Barrels</h1>
-        <ul id="barrelsList">
-        </ul>
-    </div>
+<div class="navbar">
+    <a href="http://localhost:8080/dashboard">Dashboard</a>
+</div>
+<div class="barrels-container">
+    <h1>Active Barrels</h1>
+    <ul id="barrelsList"></ul>
+</div>
 
-    <script src="js/functions.js"></script>
+<script src="js/functions.js"></script>
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script>
+    function connect() {
+        const socket = new SockJS('/my-websocket');
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/update-barrels', function (message) {
+                loadBarrels();  // Atualiza a lista de barris
+            });
+        });
+    }
+
+    function loadBarrels() {
+        fetch('/barrels-list')
+            .then(response => response.json())
+            .then(data => {
+                const listElement = document.getElementById('barrelsList');
+                listElement.innerHTML = '';
+
+                for (const barrel of data.results) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${barrel}`;
+                    listElement.appendChild(listItem);
+                }
+            })
+            .catch(error => console.error('Error loading barrels:', error));
+
+    }
+
+    window.onload = function () {
+        connect();
+        loadBarrels();
+    };
+</script>
 </body>
 </html>

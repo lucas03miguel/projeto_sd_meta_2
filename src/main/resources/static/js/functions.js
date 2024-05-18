@@ -139,11 +139,6 @@ function indexUrl() {
         });
 }
 
-function redirectToBarrelInfo() {
-    window.location.href = '/barrels';
-}
-
-
 let stompClient = null;
 
 function connect() {
@@ -152,20 +147,9 @@ function connect() {
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/messages', function (message) {
-                showMessage(JSON.parse(message.body).content);
-            });
-
-            // Fetch previous messages
-            fetch('/messages')
-                .then(response => response.json())
-                .then(messages => {
-                    messages.forEach(message => showMessage(message.content));
-                });
         });
     }
 }
-
 
 function sendMessage() {
     const query = document.getElementById('searchInput').value;
@@ -176,37 +160,11 @@ function sendMessage() {
     $("#searchInput").val("");
 }
 
-function showMessage(message) {
-    if (typeof $ !== 'undefined') {
-        $("#messages").append("<tr><td>" + message + "</td></tr>");
-    }
+
+function redirectTopSearches() {
+    window.location.href = '/top-searches';
 }
 
-function handleTopSearches() {
-    window.location.href = '/top-searches';
-
-    fetch('/top-searches', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Data received:', data);
-        const topSearchesList = document.getElementById('topSearchesList');
-        topSearchesList.innerHTML = ''; // Clear previous results
-
-        if (data.results && typeof data.results === 'object') {
-            for (const [query, count] of Object.entries(data.results)) {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>Query:</strong> ${query}<br>
-                                <strong>Count:</strong> ${count}`;
-                topSearchesList.appendChild(li);
-            }
-        } else {
-            console.error('Results is not an object:', data.results);
-        }
-    })
+function redirectBarrels() {
+    window.location.href = '/barrels';
 }
