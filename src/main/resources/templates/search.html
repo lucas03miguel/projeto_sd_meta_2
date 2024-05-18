@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Results</title>
-  <link rel="stylesheet" href="css/search.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="css/search.css">
 </head>
 <body>
 <div class="navbar">
-  <a href="http://localhost:8080/dashboard">Dashboard</a>
+    <a href="http://localhost:8080/dashboard">Dashboard</a>
 </div>
 <div class="search-container">
-  <h1>Search Results</h1>
-  <!-- Search Results -->
-  <div id="searchResults">
-    <ul id="searchResultList"></ul>
-    <div id="paginationControls"></div>
-  </div>
+    <h1>Search Results</h1>
+    <!-- Search Results -->
+    <div id="searchResults">
+        <ul id="searchResultList"></ul>
+        <div id="paginationControls"></div>
+    </div>
 </div>
 <script src="js/functions.js"></script>
+<script>
+    window.onload = function () {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('query');
+        const page = parseInt(params.get('page'), 10) || 0;
+        console.log('Initializing search results page with query:', query, 'page:', page);
+        if (query) {
+            loadSearchResults(query, page);
+        }
+    };
+</script>
 </body>
 </html>

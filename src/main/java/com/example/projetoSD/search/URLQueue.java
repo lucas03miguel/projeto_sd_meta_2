@@ -64,7 +64,7 @@ public class URLQueue extends UnicastRemoteObject implements URLQueueInterface {
             String urlQueueName = prop.getProperty("URL_QUEUE_REGISTRY_NAME");
             
             new URLQueue(urlQueueName, urlQueuePort);
-            System.out.println("URL inicializado com sucesso");
+            System.out.println("URL Queue inicializado com sucesso");
         } catch (Exception e) {
             System.out.println("[URLQUEUE] Erro: " + e);
         }
@@ -118,7 +118,6 @@ public class URLQueue extends UnicastRemoteObject implements URLQueueInterface {
         if ((separacao[0].equals("https://") || separacao[0].equals("http://")) && separacao.length == 2) return "URL invalido";
         try {
             link = formatURL(link);
-            System.out.println(link);
             if (!isValidURL(link)) return "URL invalido";
             else if (this.urlQueue.contains(link)) return "URL já existe na fila";
             

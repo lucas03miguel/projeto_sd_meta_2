@@ -9,21 +9,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.rmi.RemoteException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
 public class SearchController {
+    
     private final RMIServerInterface sv;
+    private final WebSocketController webSocketController;
     
     @Autowired
-    SearchController(RMIServerInterface rmiServerInterface) {
-        this.sv = rmiServerInterface;
+    public SearchController(RMIServerInterface rmisv, WebSocketController webSocketController) {
+        this.sv = rmisv;
+        this.webSocketController = webSocketController;
     }
     
     @PostMapping("/index-url")
@@ -41,10 +40,23 @@ public class SearchController {
         }
     }
     
+    private void updateTopSearches() {
+        System.out.println("Updating top searches");
+        // Suponha que você tenha uma maneira de obter as top searches
+        HashMap<String, Integer> topSearches; // Método fictício, adapte conforme necessário
+        try {
+            topSearches = sv.obterTopSearches();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        webSocketController.sendTop10Searches(topSearches);
+    }
+    
     @GetMapping("/search")
     public String searchPage(@RequestParam String query, @RequestParam int page, Model model) {
         model.addAttribute("query", query);
         model.addAttribute("page", page);
+        updateTopSearches();
         return "search";
     }
     
@@ -72,5 +84,10 @@ public class SearchController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
+    }
+    
+    @GetMapping("/topsearches")
+    public String topSearches(Model model) {
+        return "topsearches";
     }
 }

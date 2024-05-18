@@ -8,7 +8,6 @@ import org.apache.catalina.connector.Connector;
 
 @Configuration
 public class AdditionalTomcatConfig {
-    
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> webServerFactoryCustomizer() {
         return factory -> factory.addAdditionalTomcatConnectors(createStandardConnector());

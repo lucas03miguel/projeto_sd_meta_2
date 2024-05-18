@@ -11,7 +11,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class AuthController {
-    
     private final UserService userService;
     
     @Autowired

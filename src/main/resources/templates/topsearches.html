@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Searches</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="navbar">
+    <a href="http://localhost:8080/dashboard">Dashboard</a>
+</div>
+<div class="top-searches-container">
+    <h1>Top 10 Searches</h1>
+    <ul id="topSearchList"></ul>
+</div>
+<script src="js/functions.js"></script>
+<script>
+    window.onload = function () {
+        loadTopSearches();
+    };
+</script>
+</body>
+</html>

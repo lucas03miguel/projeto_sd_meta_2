@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('searchInput');
+    const urlInput = document.getElementById('urlInput');
+    const urlButton = document.querySelector('button[onclick="indexUrl()"]');
 
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
@@ -7,6 +9,18 @@ document.addEventListener("DOMContentLoaded", function() {
             handleSearch(); // Call the search function
         }
     });
+
+    urlInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default form submission
+            indexUrl(); // Call the URL indexing function
+        }
+    });
+
+    // Removido para evitar indexação dupla
+    // urlButton.addEventListener('click', function() {
+    //     indexUrl(); // Call the URL indexing function
+    // });
 });
 
 function submitRegisterForm() {
@@ -22,39 +36,49 @@ function shakeElement(element) {
     }, 500);
 }
 
-function submitURL() {
+function indexUrl() {
     const url = document.getElementById('urlInput').value;
     fetch('/index-url', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({url})
+        body: JSON.stringify({ url })
     })
         .then(response => {
             if (response.ok) {
                 alert('URL successfully indexed!');
+                document.getElementById('urlInput').value = ''; // Clear the input field
+                document.getElementById('urlInput').style.border = ''; // Reset the border color
             } else {
-                alert('Failed to index URL.');
+                handleError();
             }
-            document.getElementById('urlInput').value = ''; // Clear the input field
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while indexing the URL.');
+            handleError();
         });
+}
+
+function handleError() {
+    const urlInput = document.getElementById('urlInput');
+    shakeElement(urlInput); // Shake the input box
+    urlInput.style.border = '2px solid red'; // Set the border to red
 }
 
 function handleSearch() {
     const query = document.getElementById('searchInput').value;
-    if (query.length < 1) {
-        alert('Pesquisa inválida (1+ caracteres)');
+    if (query.trim().length < 1) {
         shakeElement(document.getElementById('searchInput'));
         return;
     }
 
     // Redirect to search results page with the query as a URL parameter
     window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
+}
+
+function redirectToTopSearches() {
+    window.location.href = '/topsearches';
 }
 
 function loadSearchResults(query, page) {
@@ -84,7 +108,6 @@ function loadSearchResults(query, page) {
                 }
             } else {
                 console.error('Results is not an object:', data.results);
-                alert('Unexpected data format received. Please try again later.');
             }
 
             // Pagination controls
@@ -110,7 +133,6 @@ function loadSearchResults(query, page) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while fetching search results.');
         });
 }
 
@@ -119,13 +141,54 @@ function updateURL(query, page) {
     history.pushState({ path: newURL }, '', newURL);
 }
 
-// Initialize search results page
-window.onload = function() {
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('query');
-    const page = parseInt(params.get('page'), 10) || 0;
-    console.log('Initializing search results page with query:', query, 'page:', page);
-    if (query) {
-        loadSearchResults(query, page);
-    }
-};
+function loadTopSearches() {
+    fetch('/top-searches', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const topSearchList = document.getElementById('topSearchList');
+            topSearchList.innerHTML = ''; // Clear the current list
+
+            data.forEach(search => {
+                const li = document.createElement('li');
+                li.textContent = search;
+                topSearchList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading top searches:', error);
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    connectToWebSocket();
+});
+
+function connectToWebSocket() {
+    const socket = new SockJS('/my-websocket');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+
+        stompClient.subscribe('/topic/top10searches', function(message) {
+            const topSearches = JSON.parse(message.body);
+            updateTopSearches(topSearches);
+        });
+    });
+}
+
+function updateTopSearches(searches) {
+    const topSearchList = document.getElementById('topSearchList');
+    topSearchList.innerHTML = ''; // Clear the current list
+
+    searches.forEach(search => {
+        const li = document.createElement('li');
+        li.textContent = search;
+        topSearchList.appendChild(li);
+    });
+}
