@@ -64,6 +64,8 @@ public class SearchController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> searchResults(@RequestParam String query, @RequestParam int page) {
         try {
+            System.out.println("Searching for: " + query);
+            
             HashMap<String, ArrayList<String>> results = sv.pesquisar(query);
             
             int pageSize = 10;
@@ -90,6 +92,8 @@ public class SearchController {
     public String topSearches(Model model) {
         return "top-searches";
     }
+    
+    
     
     
 }

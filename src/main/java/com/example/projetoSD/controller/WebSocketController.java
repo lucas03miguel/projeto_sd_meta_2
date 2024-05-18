@@ -13,9 +13,12 @@ import java.util.List;
 @Controller
 public class WebSocketController {
     
-    @Autowired
-    private SearchService searchService;
+    private final SearchService searchService;
     
+    @Autowired
+    public WebSocketController(SearchService searchService) {
+        this.searchService = searchService;
+    }
     @MessageMapping("/search")
     @SendTo("/topic/searchResults")
     public List<Message> handleSearchMessage(HashMap<String, Integer> message) {

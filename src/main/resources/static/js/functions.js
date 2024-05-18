@@ -20,9 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    //if (document.getElementById('searchForm')) {
-    //    setupWebSocketHandlers();
-    //}
+    connect(); // Connect to WebSocket
 });
 
 function handleError() {
@@ -57,6 +55,7 @@ function handleSearch() {
 
 function loadSearchResults(query, page) {
     console.log('Loading search results for query:', query, 'page:', page);
+
     fetch(`/search-results?query=${encodeURIComponent(query)}&page=${page}`, {
         method: 'GET',
         headers: {
@@ -163,14 +162,15 @@ function connect() {
     }
 }
 
-
 function sendMessage() {
     const query = document.getElementById('searchInput').value;
     console.log('Sending message:', query);
 
-    stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
-    $("#message").val("");
-    $("#searchInput").val("");
+    if (stompClient && stompClient.connected) {
+        stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
+    } else {
+        console.error('WebSocket is not connected.');
+    }
 }
 
 function showMessage(message) {
@@ -179,11 +179,5 @@ function showMessage(message) {
     }
 }
 
-function setupWebSocketHandlers() {
-    $(function () {
-        $("form").on('submit', function (e) {
-            e.preventDefault();
-        });
-        //$("#searchForm").click(function() { sendMessage(); });
-    });
-}
+
+
