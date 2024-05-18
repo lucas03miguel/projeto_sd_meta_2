@@ -5,6 +5,7 @@ import com.example.projetoSD.model.IndexedUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +18,14 @@ import java.util.*;
 public class SearchController {
     
     private final RMIServerInterface sv;
-    private final WebSocketController webSocketController;
+    //private final WebSocketController webSocketController;
+    private final SimpMessagingTemplate messagingTemplate;
+    
     
     @Autowired
-    public SearchController(RMIServerInterface rmisv, WebSocketController webSocketController) {
+    public SearchController(RMIServerInterface rmisv, SimpMessagingTemplate messagingTemplate) {
         this.sv = rmisv;
-        this.webSocketController = webSocketController;
+        this.messagingTemplate = messagingTemplate;
     }
     
     @PostMapping("/index-url")
@@ -40,23 +43,10 @@ public class SearchController {
         }
     }
     
-    private void updateTopSearches() {
-        System.out.println("Updating top searches");
-        // Suponha que você tenha uma maneira de obter as top searches
-        HashMap<String, Integer> topSearches; // Método fictício, adapte conforme necessário
-        try {
-            topSearches = sv.obterTopSearches();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        webSocketController.handleSearchMessage(topSearches);
-    }
-    
     @GetMapping("/search")
     public String searchPage(@RequestParam String query, @RequestParam int page, Model model) {
         model.addAttribute("query", query);
         model.addAttribute("page", page);
-        updateTopSearches();
         return "search";
     }
     
@@ -64,8 +54,6 @@ public class SearchController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> searchResults(@RequestParam String query, @RequestParam int page) {
         try {
-            System.out.println("Searching for: " + query);
-            
             HashMap<String, ArrayList<String>> results = sv.pesquisar(query);
             
             int pageSize = 10;
@@ -90,10 +78,19 @@ public class SearchController {
     
     @GetMapping("/top-searches")
     public String topSearches(Model model) {
+        updateTopSearches();
+        model.addAttribute("topSearchesList", new HashMap<String, Integer>());
         return "top-searches";
     }
     
-    
+    private void updateTopSearches() {
+        try {
+            HashMap<String, Integer> topSearches = sv.obterTopSearches();
+            messagingTemplate.convertAndSend("/topic/top-searches", topSearches);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     
 }

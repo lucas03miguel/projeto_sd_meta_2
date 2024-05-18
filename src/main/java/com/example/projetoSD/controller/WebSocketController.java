@@ -1,28 +1,22 @@
 package com.example.projetoSD.controller;
 
-import com.example.projetoSD.model.Message;
-import com.example.projetoSD.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Controller
 public class WebSocketController {
     
-    private final SearchService searchService;
+    private final SimpMessagingTemplate template;
     
     @Autowired
-    public WebSocketController(SearchService searchService) {
-        this.searchService = searchService;
+    public WebSocketController(SimpMessagingTemplate template) {
+        this.template = template;
     }
-    @MessageMapping("/search")
-    @SendTo("/topic/searchResults")
-    public List<Message> handleSearchMessage(HashMap<String, Integer> message) {
-        return searchService.search(message);
+    
+    public void handleSearchMessage(HashMap<String, Integer> topSearches) {
+        this.template.convertAndSend("/topic/top-searches", topSearches);
     }
 }
-

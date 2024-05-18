@@ -20,7 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    connect(); // Connect to WebSocket
+    //if (document.getElementById('searchForm')) {
+    //    setupWebSocketHandlers();
+    //}
 });
 
 function handleError() {
@@ -55,7 +57,6 @@ function handleSearch() {
 
 function loadSearchResults(query, page) {
     console.log('Loading search results for query:', query, 'page:', page);
-
     fetch(`/search-results?query=${encodeURIComponent(query)}&page=${page}`, {
         method: 'GET',
         headers: {
@@ -137,10 +138,6 @@ function indexUrl() {
         });
 }
 
-function redirectToTopSearches() {
-    window.location.href = '/top-searches';
-}
-
 function redirectToBarrelInfo() {
     window.location.href = '/barrels';
 }
@@ -167,15 +164,14 @@ function connect() {
     }
 }
 
+
 function sendMessage() {
     const query = document.getElementById('searchInput').value;
     console.log('Sending message:', query);
 
-    if (stompClient && stompClient.connected) {
-        stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
-    } else {
-        console.error('WebSocket is not connected.');
-    }
+    stompClient.send("/app/message", {}, JSON.stringify({'content': query}));
+    $("#message").val("");
+    $("#searchInput").val("");
 }
 
 function showMessage(message) {
@@ -184,5 +180,29 @@ function showMessage(message) {
     }
 }
 
+function handleTopSearches() {
+    window.location.href = '/top-searches';
 
 
+
+    fetch('/top-searches')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Top searches:', data);
+            const topSearchesList = document.getElementById('topSearchesList');
+            topSearchesList.innerHTML = ''; // Clear previous results
+
+            if (data && Array.isArray(data)) {
+                data.forEach(search => {
+                    const li = document.createElement('li');
+                    li.textContent = search;
+                    topSearchesList.appendChild(li);
+                });
+            } else {
+                console.error('Top searches is not an array:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
