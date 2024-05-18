@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById('searchInput');
     const urlInput = document.getElementById('urlInput');
+    const urlSearchInput = document.getElementById('urlSearchInput');
 
     if (searchInput) {
         searchInput.addEventListener('keydown', function (event) {
@@ -19,6 +20,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    if (urlSearchInput) {
+        urlSearchInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                searchUrl(); // Call the URL search function
+            }
+        });
+    }
+
     connect();
 
     //if (document.getElementById('searchForm')) {
@@ -137,6 +148,41 @@ function indexUrl() {
             console.error('Error:', error);
             handleError();
         });
+}
+
+function searchUrl() {
+    const url = document.getElementById('urlSearchInput').value;
+    window.location.href = `/search-url?url=${encodeURIComponent(url)}`;
+
+    /*
+    console.log(url)
+    fetch(`/search-url?url=${url}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data received:', data);
+            const searchResultList = document.getElementById('searchResultList');
+            searchResultList.innerHTML = ''; // Clear previous results
+
+            if (data.results && typeof data.results === 'object') {
+                for (const url of Object.entries(data.results)) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>URL:</strong> ${url}`;
+                    searchResultList.appendChild(li);
+                }
+            } else {
+                console.error('Results is not an object:', data.results);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+     */
 }
 
 let stompClient = null;

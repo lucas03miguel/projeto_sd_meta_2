@@ -1,5 +1,6 @@
 package com.example.projetoSD.controller;
 
+
 import com.example.projetoSD.interfaces.RMIServerInterface;
 import com.example.projetoSD.model.IndexedUrl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,21 @@ public class SearchController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to index URL.");
         }
+    }
+    
+    /*
+    @GetMapping("/search-url")
+    public String searchPage(@RequestParam String url, Model model) {
+        model.addAttribute("search-url", url);
+        return "search-url";
+    }
+     */
+    
+    
+    @GetMapping("/search-url")
+    public String searchUrl(Model model) {
+        System.out.println("search-url");
+        return "search-url";
     }
     
     @GetMapping("/search")
