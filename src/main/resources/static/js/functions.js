@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById('searchInput');
     const urlInput = document.getElementById('urlInput');
-    const urlButton = document.querySelector('button[onclick="indexUrl()"]');
 
     searchInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
@@ -27,58 +26,6 @@ function submitRegisterForm() {
     document.getElementById('newUsername').value = document.getElementById('username').value;
     document.getElementById('newPassword').value = document.getElementById('password').value;
     document.getElementById('registerForm').submit();
-}
-
-function shakeElement(element) {
-    element.classList.add('shake');
-    setTimeout(function() {
-        element.classList.remove('shake');
-    }, 500);
-}
-
-function indexUrl() {
-    const url = document.getElementById('urlInput').value;
-    fetch('/index-url', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('URL successfully indexed!');
-                document.getElementById('urlInput').value = ''; // Clear the input field
-                document.getElementById('urlInput').style.border = ''; // Reset the border color
-            } else {
-                handleError();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            handleError();
-        });
-}
-
-function handleError() {
-    const urlInput = document.getElementById('urlInput');
-    shakeElement(urlInput); // Shake the input box
-    urlInput.style.border = '2px solid red'; // Set the border to red
-}
-
-function handleSearch() {
-    const query = document.getElementById('searchInput').value;
-    if (query.trim().length < 1) {
-        shakeElement(document.getElementById('searchInput'));
-        return;
-    }
-
-    // Redirect to search results page with the query as a URL parameter
-    window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
-}
-
-function redirectToTopSearches() {
-    window.location.href = '/topsearches';
 }
 
 function loadSearchResults(query, page) {
@@ -141,54 +88,47 @@ function updateURL(query, page) {
     history.pushState({ path: newURL }, '', newURL);
 }
 
-function loadTopSearches() {
-    fetch('/top-searches', {
-        method: 'GET',
+function handleSearch() {
+    const query = document.getElementById('searchInput').value;
+    if (query.trim().length < 1) {
+        shakeElement(document.getElementById('searchInput'));
+        return;
+    }
+    window.location.href = `/search?query=${encodeURIComponent(query)}&page=0`;
+}
+
+function indexUrl() {
+    const url = document.getElementById('urlInput').value;
+    fetch('/index-url', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ url })
     })
-        .then(response => response.json())
-        .then(data => {
-            const topSearchList = document.getElementById('topSearchList');
-            topSearchList.innerHTML = ''; // Clear the current list
-
-            data.forEach(search => {
-                const li = document.createElement('li');
-                li.textContent = search;
-                topSearchList.appendChild(li);
-            });
+        .then(response => {
+            if (response.ok) {
+                alert('URL successfully indexed!');
+                document.getElementById('urlInput').value = '';
+            } else {
+                handleError();
+            }
         })
         .catch(error => {
-            console.error('Error loading top searches:', error);
+            console.error('Error:', error);
+            handleError();
         });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    connectToWebSocket();
-});
-
-function connectToWebSocket() {
-    const socket = new SockJS('/my-websocket');
-    const stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function(frame) {
-        console.log('Connected: ' + frame);
-
-        stompClient.subscribe('/topic/top10searches', function(message) {
-            const topSearches = JSON.parse(message.body);
-            updateTopSearches(topSearches);
-        });
-    });
+function handleError() {
+    const urlInput = document.getElementById('urlInput');
+    shakeElement(urlInput);
+    urlInput.style.border = '2px solid red';
 }
 
-function updateTopSearches(searches) {
-    const topSearchList = document.getElementById('topSearchList');
-    topSearchList.innerHTML = ''; // Clear the current list
-
-    searches.forEach(search => {
-        const li = document.createElement('li');
-        li.textContent = search;
-        topSearchList.appendChild(li);
-    });
+function shakeElement(element) {
+    element.classList.add('shake');
+    setTimeout(function() {
+        element.classList.remove('shake');
+    }, 500);
 }

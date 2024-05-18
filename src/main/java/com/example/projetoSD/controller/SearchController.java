@@ -49,7 +49,7 @@ public class SearchController {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-        webSocketController.sendTop10Searches(topSearches);
+        webSocketController.handleSearchMessage(topSearches);
     }
     
     @GetMapping("/search")
@@ -90,4 +90,6 @@ public class SearchController {
     public String topSearches(Model model) {
         return "topsearches";
     }
+    
+    
 }
